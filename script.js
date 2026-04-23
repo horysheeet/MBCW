@@ -2,6 +2,18 @@ const header = document.getElementById('siteHeader');
 const footer = document.querySelector('.site-footer');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+const business = {
+  name: 'ShineDash Car Wash Services',
+  mark: 'SD',
+  lineOne: 'ShineDash Car Wash',
+  lineTwo: 'Services',
+  phoneRaw: '09661341375',
+  phoneDisplay: '0966 134 1375',
+  email: 'shinedash.carwash@gmail.com',
+  address: 'Aurora Hill, Bayan Park, Baguio City, Philippines',
+  addressShort: 'Aurora Hill, Bayan Park, Baguio City'
+};
+
 const getCurrentPage = () => {
   const page = window.location.pathname.split('/').pop() || 'index.html';
   return page.toLowerCase();
@@ -44,11 +56,11 @@ const renderSharedHeader = () => {
 
   header.innerHTML = `
     <div class="container nav">
-      <a class="brand" href="index.html" aria-label="Mobile Friendly Car Washes home">
-        <span class="brand-mark">MF</span>
+      <a class="brand" href="index.html" aria-label="${business.name} home">
+        <span class="brand-mark">${business.mark}</span>
         <span class="brand-copy">
-          <strong>Mobile Friendly</strong>
-          <small>Car Washes</small>
+          <strong>${business.lineOne}</strong>
+          <small>${business.lineTwo}</small>
         </span>
       </a>
 
@@ -69,11 +81,10 @@ const renderSharedHeader = () => {
             .join('')}
         </nav>
 
-        <div class="top-icons" aria-label="Contact and social links">
-          <a class="icon-link" href="tel:5551234567" aria-label="Call us">☎</a>
-          <a class="icon-link" href="#" aria-label="Facebook">f</a>
-          <a class="icon-link" href="#" aria-label="Instagram">◎</a>
-          <a class="icon-link" href="#" aria-label="Search">⌕</a>
+        <div class="top-icons" aria-label="Quick contact links">
+          <a class="icon-link" href="tel:${business.phoneRaw}" aria-label="Call ${business.name}">☎</a>
+          <a class="icon-link" href="mailto:${business.email}" aria-label="Email ${business.name}">✉</a>
+          <a class="icon-link" href="contact.html" aria-label="View location and booking details">📍</a>
         </div>
       </div>
     </div>
@@ -91,21 +102,21 @@ const renderSharedFooter = () => {
   footer.innerHTML = isCompactFooter
     ? `
       <div class="container footer-grid">
-        <p><strong>Mobile Friendly Car Washes</strong></p>
-        <p class="small-note">Mobile-first booking for eco-friendly car care.</p>
+        <p><strong>${business.name}</strong></p>
+        <p class="small-note">Professional mobile car care for homes, condos, and workplaces in ${business.addressShort}.</p>
       </div>
     `
     : `
       <div class="container footer-grid footer-home-grid">
         <div class="footer-brand">
-          <a class="brand brand-footer" href="index.html" aria-label="Mobile Friendly Car Washes home">
-            <span class="brand-mark">MF</span>
+          <a class="brand brand-footer" href="index.html" aria-label="${business.name} home">
+            <span class="brand-mark">${business.mark}</span>
             <span class="brand-copy">
-              <strong>Mobile Friendly</strong>
-              <small>Car Washes</small>
+              <strong>${business.lineOne}</strong>
+              <small>${business.lineTwo}</small>
             </span>
           </a>
-          <p class="small-note">Water-saving, on-demand detailing for modern drivers who want convenience without compromise.</p>
+          <p class="small-note">Local, eco-conscious car wash and detailing service based in ${business.addressShort}.</p>
         </div>
 
         <div>
@@ -120,12 +131,13 @@ const renderSharedFooter = () => {
 
         <div>
           <h3>Contact</h3>
-          <p><a href="tel:5551234567">(555) 123-4567</a></p>
-          <p><a href="mailto:jasdg@mobilecarwashdemo.com">jasdg@mobilecarwashdemo.com</a></p>
-          <div class="footer-socials" aria-label="Social links">
-            <a class="icon-link" href="#" aria-label="Facebook">f</a>
-            <a class="icon-link" href="#" aria-label="Instagram">◎</a>
-            <a class="icon-link" href="#" aria-label="LinkedIn">in</a>
+          <p><a href="tel:${business.phoneRaw}">${business.phoneDisplay}</a></p>
+          <p><a href="mailto:${business.email}">${business.email}</a></p>
+          <p>${business.addressShort}</p>
+          <div class="footer-socials" aria-label="Quick actions">
+            <a class="icon-link" href="tel:${business.phoneRaw}" aria-label="Call us">☎</a>
+            <a class="icon-link" href="mailto:${business.email}" aria-label="Send email">✉</a>
+            <a class="icon-link" href="contact.html" aria-label="Open contact page">→</a>
           </div>
         </div>
       </div>
@@ -260,6 +272,8 @@ const initHeroCatchphraseRotator = () => {
   }
 
   let currentIndex = 0;
+  rotator.textContent = phrases[currentIndex];
+  rotator.classList.add('is-wiping-in');
 
   window.setInterval(() => {
     rotator.classList.remove('is-wiping-in');
@@ -270,8 +284,121 @@ const initHeroCatchphraseRotator = () => {
       rotator.textContent = phrases[currentIndex];
       rotator.classList.remove('is-wiping-out');
       rotator.classList.add('is-wiping-in');
-    }, 220);
-  }, 2800);
+    }, 260);
+  }, 3600);
+};
+
+const initReviewCarousel = () => {
+  const carousel = document.querySelector('[data-review-carousel]');
+
+  if (!carousel) {
+    return;
+  }
+
+  const slides = Array.from(carousel.querySelectorAll('[data-review-slide]'));
+  const dots = Array.from(carousel.querySelectorAll('.testimonial-dot'));
+
+  if (slides.length < 2) {
+    return;
+  }
+
+  let currentIndex = 0;
+  let autoplayId = null;
+
+  const setActiveSlide = (nextIndex) => {
+    currentIndex = nextIndex;
+
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('is-active', index === currentIndex);
+    });
+
+    dots.forEach((dot, index) => {
+      const isActive = index === currentIndex;
+      dot.classList.toggle('is-active', isActive);
+      dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+    });
+  };
+
+  const startAutoplay = () => {
+    if (prefersReducedMotion.matches) {
+      return;
+    }
+
+    window.clearInterval(autoplayId);
+    autoplayId = window.setInterval(() => {
+      setActiveSlide((currentIndex + 1) % slides.length);
+    }, 4200);
+  };
+
+  const goToSlide = (nextIndex, shouldResetTimer = true) => {
+    setActiveSlide(nextIndex);
+
+    if (shouldResetTimer) {
+      startAutoplay();
+    }
+  };
+
+  const goToNextSlide = () => {
+    goToSlide((currentIndex + 1) % slides.length);
+  };
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', (event) => {
+      event.stopPropagation();
+      goToSlide(index);
+    });
+  });
+
+  carousel.addEventListener('click', () => {
+    goToNextSlide();
+  });
+
+  if (prefersReducedMotion.matches) {
+    setActiveSlide(0);
+    return;
+  }
+
+  startAutoplay();
+};
+
+const initFloatingBookButton = () => {
+  const floatingButton = document.createElement('a');
+  floatingButton.className = 'floating-book-btn';
+  floatingButton.href = 'contact.html';
+  floatingButton.setAttribute('aria-label', 'Book a car wash service');
+  floatingButton.innerHTML = '<span>Book Now</span>';
+  document.body.appendChild(floatingButton);
+};
+
+const initPageLoader = () => {
+  const loader = document.querySelector('[data-page-loader]');
+
+  if (!loader) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    loader.classList.add('is-hidden');
+
+    window.setTimeout(() => {
+      loader.remove();
+    }, 420);
+  }, prefersReducedMotion.matches ? 50 : 380);
+};
+
+const initContactForm = () => {
+  const form = document.getElementById('contactForm');
+
+  if (!form) {
+    return;
+  }
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    window.alert('Thanks. Your booking request for ShineDash Car Wash Services has been recorded for this thesis prototype.');
+    form.reset();
+    initFormStates();
+  });
 };
 
 const initFormStates = () => {
@@ -297,4 +424,8 @@ const initFormStates = () => {
 initPageLoadAnimation();
 initScrollReveal();
 initHeroCatchphraseRotator();
+initReviewCarousel();
+initFloatingBookButton();
+initPageLoader();
+initContactForm();
 initFormStates();
